@@ -6,6 +6,7 @@ const Usuario = require("./Models/Usuario")
 const UsuarioService = require("./Controllers/UsuarioService")
 const Perfil = require("./Models/Perfil")
 const PerfilService = require("./Controllers/PerfilService")
+const erro_mensagem = require("./Erros")
 const app = express()
 app.use(express.json())
 
@@ -24,36 +25,6 @@ empresaService.inserirEmpresa(segundaEmpresa)
 usuariosService.inserirUsuario(new Usuario(1, "gabriel", "123456","Gabriel Espindola","", "gabriel.espindola@ligaeducacional.com.br"))
 usuariosService.inserirUsuario(new Usuario(2, "yasmim", "123456", "Yasmim Souza","", "yasmim@ligaeducacional.com.br"))
 
-//Mensagens de erro
-erro_mensagem = {
-    'erro.empresa.naoencontrada': { 
-        "erro": true, "mensagem":"Empresa não encontrada!" 
-    },
-    'erro.camposorbigatorios.naopreenchidos': { 
-        "erro": true, "mensagem":"Todos os campos obrigatórios devem ser preenchidos!"
-    },
-    'erro.empresa.jacadastrada': { 
-        "erro": true, "mensagem": "Empresa já cadastrada!"
-    },
-    'empresa.excluida.sucesso': { 
-        "erro": false, "mensagem": " Empresa excluída com sucesso! " 
-    },
-    'erro.usuario.naoencontrado': { 
-        "erro": false, "mensagem": "Usuário não encontrado!" 
-    },
-    'usuario.excluido.sucesso': { 
-        "erro": false, "mensagem": "Usuário excluído com sucesso!" 
-    },
-    'erro.perfil.naoencontrado': { 
-        "erro": false, "mensagem": "Perfil não encontrado!" 
-    },
-    'perfil.excluido.sucesso': { 
-        "erro": false, "mensagem": "Perfil excluído com sucesso!" 
-    },
-    'erro.perfil.jacadastradonaempresa': { 
-        "erro": false, "mensagem": "Perfil já cadastrado para este usuário!" 
-    }
-}
 
 //Rotas das empresas
 app.get("/empresa",(req,res)=>{
