@@ -1,0 +1,15 @@
+{
+  "name": "projeto-3",
+  "version": "1.0.0",
+  "description": "Fazer a integração do projeto 1 e 2 e implementar os perfis de usuarios",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Rodrigo Rodrigues Souza <rodrigo.souza@celsolisboa.edu.br>",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
