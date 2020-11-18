@@ -9,7 +9,7 @@ module.exports = class UsuarioService {
             return null
         }
 
-        return pesquisa[0]
+        return {...pesquisa[0]}
     }
 
     validarUsuario(usuario){

@@ -9,7 +9,7 @@ module.exports = class PerfilService {
             return null
         }
 
-        return pesquisa[0]
+        return {...pesquisa[0]}
     }
 
     validarPerfil (perfil){

@@ -28,15 +28,27 @@ usuariosService.inserirUsuario(new Usuario(2, "yasmim", "123456", "Yasmim Souza"
 
 //Rotas das empresas
 app.get("/empresa",(req,res)=>{
+    console.log(empresaService.empresas)
     res.status(200).send(empresaService.empresas)
 })
+
+
 
 app.get("/empresa/:id",(req,res)=>{
     const {id} = req.params
 
     const empresa = empresaService.buscarEmpresa(id)
     if (empresa == null)
-    res.status(400).send(erro_mensagem['erro.empresa.naoencontrada'])
+        res.status(400).send(erro_mensagem['erro.empresa.naoencontrada'])
+    
+    const cloneEmpresa = {...empresa}
+    empresa.perfisEmpresa = perfilService.perfis
+        .filter( perfil => perfil.id_empresa == empresa.id )
+        .map( (perfil) => {
+            const usuario = usuariosService.buscarUsuario(perfil.id_usuario)
+            return {...perfil, empresa: cloneEmpresa, usuario }
+        })
+    
     res.status(200).send(empresa)
 })
 
@@ -127,6 +139,15 @@ app.get("/usuario/:id",(req,res)=>{
         res.status(400).send(erro_mensagem['erro.usuario.naoencontrado'])
         return
     }
+
+    const cloneUsuario = {...usuario}
+    usuario.perfis = perfilService.perfis
+        .filter( perfil => perfil.id_usuario == usuario.id )
+        .map( (perfil) => {
+            const empresa = empresaService.buscarEmpresa(perfil.id_empresa)
+            return {...perfil, empresa, usuario: cloneUsuario }
+        })
+
     res.status(200).send(usuario)
 })
 
