@@ -9,7 +9,7 @@ module.exports = class EmpresaService {
             return null
         }
 
-        return pesquisa[0]
+        return {...pesquisa[0]}
     }
 
     validarEmpresa (empresa){
