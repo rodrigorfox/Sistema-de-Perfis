@@ -6,8 +6,18 @@ const Usuario = require("./Models/Usuario")
 const UsuarioService = require("./Controllers/UsuarioService")
 const Perfil = require("./Models/Perfil")
 const PerfilService = require("./Controllers/PerfilService")
+const erro_mensagem = require("./Erros")
 const app = express()
+const cors = require('cors')
 app.use(express.json())
+app.use((req, res, next) => {
+    //Qual site tem permissão de realizar a conexão, "*" indicando que qualquer site pode fazer a conexão
+    res.header("Access-Control-Allow-Origin", "*");
+	//Quais são os métodos que a conexão pode realizar na API
+    res.header("Access-Control-Allow-Methods", 'GET,PUT,POST,DELETE');
+    app.use(cors());
+    next();
+});
 
 //Iniciando os Serviços
 const empresaService = new EmpresaService()
@@ -24,48 +34,30 @@ empresaService.inserirEmpresa(segundaEmpresa)
 usuariosService.inserirUsuario(new Usuario(1, "gabriel", "123456","Gabriel Espindola","", "gabriel.espindola@ligaeducacional.com.br"))
 usuariosService.inserirUsuario(new Usuario(2, "yasmim", "123456", "Yasmim Souza","", "yasmim@ligaeducacional.com.br"))
 
-//Mensagens de erro
-erro_mensagem = {
-    'erro.empresa.naoencontrada': { 
-        "erro": true, "mensagem":"Empresa não encontrada!" 
-    },
-    'erro.camposorbigatorios.naopreenchidos': { 
-        "erro": true, "mensagem":"Todos os campos obrigatórios devem ser preenchidos!"
-    },
-    'erro.empresa.jacadastrada': { 
-        "erro": true, "mensagem": "Empresa já cadastrada!"
-    },
-    'empresa.excluida.sucesso': { 
-        "erro": false, "mensagem": " Empresa excluída com sucesso! " 
-    },
-    'erro.usuario.naoencontrado': { 
-        "erro": false, "mensagem": "Usuário não encontrado!" 
-    },
-    'usuario.excluido.sucesso': { 
-        "erro": false, "mensagem": "Usuário excluído com sucesso!" 
-    },
-    'erro.perfil.naoencontrado': { 
-        "erro": false, "mensagem": "Perfil não encontrado!" 
-    },
-    'perfil.excluido.sucesso': { 
-        "erro": false, "mensagem": "Perfil excluído com sucesso!" 
-    },
-    'erro.perfil.jacadastradonaempresa': { 
-        "erro": false, "mensagem": "Perfil já cadastrado para este usuário!" 
-    }
-}
 
 //Rotas das empresas
 app.get("/empresa",(req,res)=>{
+    console.log(empresaService.empresas)
     res.status(200).send(empresaService.empresas)
 })
+
+
 
 app.get("/empresa/:id",(req,res)=>{
     const {id} = req.params
 
     const empresa = empresaService.buscarEmpresa(id)
     if (empresa == null)
-    res.status(400).send(erro_mensagem['erro.empresa.naoencontrada'])
+        res.status(400).send(erro_mensagem['erro.empresa.naoencontrada'])
+    
+    const cloneEmpresa = {...empresa}
+    empresa.perfisEmpresa = perfilService.perfis
+        .filter( perfil => perfil.id_empresa == empresa.id )
+        .map( (perfil) => {
+            const usuario = usuariosService.buscarUsuario(perfil.id_usuario)
+            return {...perfil, empresa: cloneEmpresa, usuario }
+        })
+    
     res.status(200).send(empresa)
 })
 
@@ -156,6 +148,15 @@ app.get("/usuario/:id",(req,res)=>{
         res.status(400).send(erro_mensagem['erro.usuario.naoencontrado'])
         return
     }
+
+    const cloneUsuario = {...usuario}
+    usuario.perfis = perfilService.perfis
+        .filter( perfil => perfil.id_usuario == usuario.id )
+        .map( (perfil) => {
+            const empresa = empresaService.buscarEmpresa(perfil.id_empresa)
+            return {...perfil, empresa, usuario: cloneUsuario }
+        })
+
     res.status(200).send(usuario)
 })
 
@@ -170,7 +171,7 @@ app.post("/usuario",(req,res)=>{
         return
     }
 
-    if (!("nomeSocial" in novo_usuario) || ("nomeSocial" in novo_usuario == "")){
+    if ((novo_usuario.nomeSocial == "") || !("nomeSocial" in novo_usuario)){
         novo_usuario["nomeSocial"] = novo_usuario["nomeCompleto"]
     }
 
