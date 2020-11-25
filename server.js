@@ -1,3 +1,4 @@
+
 //Importando as dependencias necessárias
 const express = require("express")
 const Empresa = require("./Models/Empresa")
@@ -318,4 +319,3 @@ app.delete("/perfil/:id",(req,res)=>{
 const port = 3000
 app.listen(port, ()=>{
     console.log(`Iniciando servidor...`)
-})
