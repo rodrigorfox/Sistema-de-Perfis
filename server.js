@@ -14,7 +14,7 @@ app.use((req, res, next) => {
     //Qual site tem permissão de realizar a conexão, "*" indicando que qualquer site pode fazer a conexão
     res.header("Access-Control-Allow-Origin", "*");
 	//Quais são os métodos que a conexão pode realizar na API
-    res.header("Access-Control-Allow-Methods", 'GET,PUT,POST,DELETE');
+    res.header("Access-Control-Allow-Methods", 'GET,PATCH,POST,DELETE');
     app.use(cors());
     next();
 });
@@ -32,7 +32,7 @@ empresaService.inserirEmpresa(segundaEmpresa)
 
 //Dados de teste dos usuarios
 usuariosService.inserirUsuario(new Usuario(1, "gabriel", "123456","Gabriel Espindola","", "gabriel.espindola@ligaeducacional.com.br"))
-usuariosService.inserirUsuario(new Usuario(2, "yasmim", "123456", "Yasmim Souza","", "yasmim@ligaeducacional.com.br"))
+usuariosService.inserirUsuario(new Usuario(2, "yasmin", "123456", "Yasmin Paz","", "yasmin@ligaeducacional.com.br"))
 
 
 //Rotas das empresas
